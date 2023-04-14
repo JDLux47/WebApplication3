@@ -26,14 +26,16 @@ namespace WebApplication3.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new() { Name = model.Name, Login = model.Login, Password = model.Password, UserName = model.Login, DateUpdateBalance = DateTime.Now};
+                User user = new() { Name = model.Name, Login = model.Login, Balance = model.Balance, Password = model.Password, UserName = model.Login, DateUpdateBalance = DateTime.Now};
                 // Добавление нового пользователя
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    // Установка роли User
+                    await _userManager.AddToRoleAsync(user, "user");
                     // Установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return Ok(new { message = "Добавлен новый пользователь: " + user.Name });
+                    return Ok(new { message = "Добавлен новый пользователь: ", Login = model.Login });
                 }
                 else
                 {
@@ -73,7 +75,11 @@ namespace WebApplication3.Controllers
 
                 if (result.Succeeded)
                 {
-                    return Ok(new { message = "Выполнен вход", Login = model.Login, Id = userId });
+                    var usr = await _userManager.FindByNameAsync(model.Login);
+                    //User usr = await GetCurrentUserAsync();
+                    IList<string> roles = await _userManager.GetRolesAsync(usr);
+                    string? userRole = roles.FirstOrDefault();
+                    return Ok(new { message = "Выполнен вход", Login = model.Login, Id = userId, userRole });
                 }
                 else
                 {
@@ -119,7 +125,9 @@ namespace WebApplication3.Controllers
             {
                 return Unauthorized(new { message = "Вы Гость. Пожалуйста, выполните вход" });
             }
-            return Ok(new { message = "Сессия активна", Login = usr.Login });
+            IList<string> roles = await _userManager.GetRolesAsync(usr);
+            string? userRole = roles.FirstOrDefault();
+            return Ok(new { message = "Сессия активна", Login = usr.Login, userRole });
         }
         private Task<User> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }

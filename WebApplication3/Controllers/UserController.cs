@@ -7,6 +7,8 @@ using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using WebApplication3.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace ASPNetCoreApp.Controllers
 {
@@ -91,6 +93,7 @@ namespace ASPNetCoreApp.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.User.FindAsync(id);

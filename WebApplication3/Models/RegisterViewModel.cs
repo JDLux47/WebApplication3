@@ -11,6 +11,9 @@ namespace WebApplication3.Models
         [Display(Name = "Login")]
         public string Login { get; set; }
         [Required]
+        [Display(Name = "Баланс")]
+        public decimal Balance { get; set; }
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
