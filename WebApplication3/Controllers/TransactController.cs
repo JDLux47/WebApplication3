@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication3.Models;
 using Microsoft.AspNetCore.Cors;
+using System.Runtime.CompilerServices;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -61,6 +62,7 @@ namespace WebApplication3.Controllers
             };
 
             _context.Transact.Add(transact);
+            _context.User.Find(transact.UserId).Balance += transact.Sum * transact.Type;
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTransact", new { id = transact.Id }, transact);

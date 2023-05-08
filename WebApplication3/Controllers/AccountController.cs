@@ -35,7 +35,11 @@ namespace WebApplication3.Controllers
                     await _userManager.AddToRoleAsync(user, "user");
                     // Установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return Ok(new { message = "Добавлен новый пользователь: ", Login = model.Login });
+
+                    IList<string> roles = await _userManager.GetRolesAsync(user);
+                    string? userRole = roles.FirstOrDefault();
+
+                    return Ok(new { message = "Добавлен новый пользователь: ", Login = model.Login, Id = user.Id, userRole, Balance = user.Balance, DateUpdateBalance = user.DateUpdateBalance, Name = user.Name });
                 }
                 else
                 {
@@ -79,7 +83,7 @@ namespace WebApplication3.Controllers
                     //User usr = await GetCurrentUserAsync();
                     IList<string> roles = await _userManager.GetRolesAsync(usr);
                     string? userRole = roles.FirstOrDefault();
-                    return Ok(new { message = "Выполнен вход", Login = model.Login, Id = userId, userRole });
+                    return Ok(new { message = "Выполнен вход", Login = model.Login, Id = userId, userRole, Balance = usr.Balance, DateUpdateBalance = usr.DateUpdateBalance, Name = usr.Name });
                 }
                 else
                 {
