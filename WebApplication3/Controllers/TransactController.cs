@@ -89,7 +89,7 @@ namespace WebApplication3.Controllers
 
             _context.Transact.Update(transact);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(transact);
         }
 
         // DELETE api/<TransactController>/5
