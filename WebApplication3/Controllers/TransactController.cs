@@ -70,31 +70,25 @@ namespace WebApplication3.Controllers
 
         // PUT api/<TransactController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTransact(int id, Transact transact)
+        public async Task<IActionResult> PutTransact([FromRoute] int id, [FromBody] TransactDTO transactDTO)
         {
-            if (id != transact.Id)
+            var transact = _context.Transact.Find(id);
+
+            if (transact == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(transact).State = EntityState.Modified;
+            transact.Type = transactDTO.Type;
+            transact.Date = transactDTO.Date;
+            transact.Sum = transactDTO.Sum;
+            transact.CategoryId = transactDTO.CategoryId;
+            transact.UserId = transactDTO.UserId;
+            transact.User = _context.User.Find(transactDTO.UserId);
+            transact.Category = _context.Category.Find(transactDTO.CategoryId);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TransactExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            _context.Transact.Update(transact);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
@@ -114,6 +108,10 @@ namespace WebApplication3.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// функция проверки существования транзакции
+        /// </summary>
+        /// <returns></returns>
         private bool TransactExists(int id)
         {
             return _context.Transact.Any(e => e.Id == id);

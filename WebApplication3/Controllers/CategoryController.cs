@@ -25,29 +25,35 @@ namespace WebApplication3.Controllers
             return await _context.Category.ToListAsync();
         }
 
-        //// GET api/<CategoryController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
+        // POST api/<CategoryController>
+        [HttpPost]
+        public async Task<ActionResult<Category>> PostTransact(Category category)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //// POST api/<CategoryController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
+            _context.Category.Add(category);
+            await _context.SaveChangesAsync();
 
-        //// PUT api/<CategoryController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+        }
 
-        //// DELETE api/<CategoryController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
+        // DELETE api/<CategoryController>/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var category = await _context.Category.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            _context.Category.Remove(category);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }

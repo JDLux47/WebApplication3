@@ -108,6 +108,10 @@ namespace ASPNetCoreApp.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// функция проверки на существование пользователя
+        /// </summary>
+        /// <returns></returns>
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.Id == id);

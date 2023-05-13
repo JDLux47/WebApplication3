@@ -18,10 +18,14 @@ namespace WebApplication3.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
+
+        /// <summary>
+        /// функция регистрации
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/account/register")]
-
-[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -66,6 +70,10 @@ namespace WebApplication3.Controllers
             }
         }
 
+        /// <summary>
+        /// функция входа
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/account/login")]
         //[AllowAnonymous]
@@ -107,6 +115,11 @@ namespace WebApplication3.Controllers
                 return Created("", errorMsg);
             }
         }
+
+        /// <summary>
+        /// функция выхода
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/account/logoff")]
         public async Task<IActionResult> LogOff()
@@ -120,6 +133,11 @@ namespace WebApplication3.Controllers
             await _signInManager.SignOutAsync();
             return Ok(new { message = "Выполнен выход", Login = usr.Login });
         }
+
+        /// <summary>
+        /// функция проверки авторизации
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/account/isauthenticated")]
         public async Task<IActionResult> IsAuthenticated()
